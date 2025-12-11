@@ -4,71 +4,259 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>반응형 자기소개 페이지</title>
-    <link rel="stylesheet" href="style.css">
-    <script src="script.js" defer></script>
+    <style>
+        /* === 기본 스타일 (공통) === */
+        :root {
+            --primary: #4a90e2;
+            --text: #333;
+            --bg: #fdfdfd;
+        }
+        
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        
+        body {
+            font-family: 'Pretendard', sans-serif;
+            line-height: 1.6;
+            color: var(--text);
+            background-color: var(--bg);
+        }
+
+        /* 헤더 영역 */
+        header {
+            background-color: white;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .header-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px 20px;
+            max-width: 1000px;
+            margin: 0 auto;
+            position: relative;
+        }
+
+        .logo {
+            font-size: 1.2rem;
+            font-weight: bold;
+            color: var(--primary);
+            text-decoration: none;
+        }
+
+        /* ==============================================
+           2. 체크박스 햄버거 메뉴 핵심 로직 (보여주신 이미지 원리)
+           ============================================== */
+        
+        /* (1) 실제 체크박스는 화면에서 숨깁니다 */
+        #menu-checkbox {
+            display: none;
+        }
+
+        /* (2) 라벨: 사용자가 누르는 버튼 (햄버거 아이콘) */
+        .menu-label {
+            display: block; /* 모바일에서만 보임 */
+            cursor: pointer;
+            font-size: 24px;
+        }
+
+        /* (3) 네비게이션 메뉴: 기본적으로 모바일에서는 숨김 */
+        .nav-menu {
+            display: none; /* 안 보임 상태 */
+            position: absolute;
+            top: 100%;
+            left: 0;
+            width: 100%;
+            background-color: white;
+            box-shadow: 0 5px 5px rgba(0,0,0,0.1);
+            flex-direction: column;
+            text-align: center;
+        }
+
+        /* (4) 핵심 동작: 체크박스가 체크(:checked)되면 -> 형제 요소인 메뉴(.nav-menu)를 보여줌(block) */
+        #menu-checkbox:checked ~ .nav-menu {
+            display: flex;
+        }
+
+        /* 메뉴 링크 스타일 */
+        .nav-menu a {
+            padding: 15px;
+            text-decoration: none;
+            color: #333;
+            border-bottom: 1px solid #eee;
+        }
+        .nav-menu a:hover { background-color: #f0f0f0; }
+
+
+        /* === 메인 콘텐츠 === */
+        main {
+            padding: 20px;
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+
+        section {
+            margin-bottom: 40px;
+            padding: 20px;
+            background: white;
+            border-radius: 10px;
+            border: 1px solid #eee;
+        }
+
+        h2 { color: var(--primary); margin-bottom: 15px; }
+
+        /* 프로필 카드 */
+        .profile {
+            text-align: center;
+        }
+        .profile-img {
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            background-color: #ddd; /* 이미지 없을 때 회색 원 */
+            margin: 0 auto 15px;
+            object-fit: cover;
+        }
+
+        /* 기술 스택 그리드 */
+        .skills-list {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr); /* 모바일: 2열 */
+            gap: 10px;
+        }
+        .skill-item {
+            background: #eee;
+            padding: 10px;
+            text-align: center;
+            border-radius: 5px;
+            font-size: 0.9rem;
+        }
+
+        /* 푸터 */
+        footer {
+            text-align: center;
+            padding: 20px;
+            background: #333;
+            color: white;
+            font-size: 0.8rem;
+        }
+
+        /* ==============================================
+           3. 반응형 디자인 (Media Queries)
+           ============================================== */
+        
+        /* 태블릿 & PC (화면 너비 768px 이상일 때 적용) */
+        @media (min-width: 768px) {
+            
+            /* (1) 체크박스 시스템 해제: PC에서는 햄버거 버튼 숨김 */
+            .menu-label {
+                display: none;
+            }
+
+            /* (2) 메뉴 상시 노출: 가로로 배치 */
+            .nav-menu {
+                display: flex !important; /* 모바일의 숨김 속성 덮어쓰기 */
+                position: static; /* 절대 위치 해제 */
+                flex-direction: row; /* 가로 배치 */
+                width: auto;
+                box-shadow: none;
+                background: transparent;
+                gap: 20px;
+            }
+
+            .nav-menu a {
+                border-bottom: none;
+                padding: 0;
+            }
+
+            /* 레이아웃 변경: 프로필 옆에 소개글 오도록 */
+            .profile {
+                display: flex;
+                align-items: center;
+                text-align: left;
+                gap: 20px;
+            }
+            .profile-img { margin: 0; }
+
+            /* 기술 스택 4열로 확장 */
+            .skills-list {
+                grid-template-columns: repeat(4, 1fr);
+            }
+        }
+    </style>
 </head>
 <body>
 
-    <header class="header">
-        <h1>제 이름 (NAME)</h1>
-        
-        <input type="checkbox" id="menu-toggle" class="menu-toggle">
-        <label for="menu-toggle" class="hamburger-icon">
-            &#9776; </label>
+    <header>
+        <div class="header-container">
+            <a href="#" class="logo">My Portfolio</a>
 
-        <nav class="nav">
-            <ul>
-                <li><a href="#about">소개</a></li>
-                <li><a href="#skills">기술</a></li>
-                <li><a href="#projects">프로젝트</a></li>
-                <li><a href="#contact">연락처</a></li>
-            </ul>
-        </nav>
+            <input type="checkbox" id="menu-checkbox">
+            
+            <label for="menu-checkbox" class="menu-label">
+                ☰ </label>
+
+            <nav class="nav-menu">
+                <a href="#about">소개</a>
+                <a href="#skills">기술</a>
+                <a href="#projects">프로젝트</a>
+                <a href="#contact">연락처</a>
+            </nav>
+        </div>
     </header>
 
-    <main class="main-content">
-        <section id="about" class="section about">
-            <h2>👋 저를 소개합니다</h2>
-            <p>저는 프론트엔드 개발자를 꿈꾸는 [경력/전공] 분야의 [N년차]입니다. 사용자 경험(UX)을 중요하게 생각하며, 깔끔하고 효율적인 코드 작성을 위해 노력합니다.</p>
-            <div class="profile-card">
-                <img src="profile.jpg" alt="프로필 사진"> 
-                <p><strong>생년월일:</strong> 19XX.XX.XX</p>
-                <p><strong>거주지:</strong> [지역]</p>
+    <main>
+        <section id="about" class="profile">
+            <img src="https://via.placeholder.com/150" alt="프로필 사진" class="profile-img">
+            <div>
+                <h2>안녕하세요! 👋</h2>
+                <p>사용자 경험을 중요하게 생각하는 웹 개발자 <strong>홍길동</strong>입니다.<br>
+                반응형 웹 디자인과 인터랙티브한 UI 구현에 관심이 많습니다.</p>
             </div>
         </section>
 
-        <section id="skills" class="section skills">
-            <h2>🛠️ 기술 스택</h2>
-            <div class="skills-grid">
-                <span>HTML5 / CSS3</span>
-                <span>JavaScript (ES6+)</span>
-                <span>React / Vue.js</span>
-                <span>Node.js / Python</span>
+        <section id="skills">
+            <h2>🛠 Skills</h2>
+            <div class="skills-list">
+                <div class="skill-item">HTML5 / CSS3</div>
+                <div class="skill-item">JavaScript</div>
+                <div class="skill-item">React</div>
+                <div class="skill-item">Git / GitHub</div>
             </div>
         </section>
-        
-        <section id="projects" class="section projects">
-            <h2>🚀 주요 프로젝트</h2>
-            <div class="project-item">
-                <h3>프로젝트 A</h3>
-                <p>반응형 쇼핑몰 웹사이트 구축 (HTML, CSS, JS, API 연동)</p>
-            </div>
-            <div class="project-item">
-                <h3>프로젝트 B</h3>
-                <p>데이터 시각화 대시보드 개발 (React, D3.js)</p>
-            </div>
+
+        <section id="projects">
+            <h2>🚀 Projects</h2>
+            <p><strong>1. 포트폴리오 사이트</strong><br>반응형 디자인을 적용한 개인 소개 페이지입니다.</p>
+            <hr style="margin: 10px 0; border: 0; border-top: 1px solid #eee;">
+            <p><strong>2. 할 일 목록 앱 (Todo App)</strong><br>JavaScript 로컬 스토리지를 활용한 앱입니다.</p>
         </section>
-        
-        <section id="contact" class="section contact">
-            <h2>📧 연락처</h2>
-            <p>이메일: <a href="mailto:your-email@example.com">your-email@example.com</a></p>
-            <p>GitHub: <a href="https://github.com/yourname">github.com/yourname</a></p>
+
+        <section id="contact">
+            <h2>📧 Contact</h2>
+            <p>Email: me@example.com</p>
+            <p>Phone: 010-1234-5678</p>
         </section>
     </main>
 
-    <footer class="footer">
-        <p>&copy; 2025. All rights reserved by [Your Name].</p>
+    <footer>
+        &copy; 2025 Hong Gil Dong. All rights reserved.
     </footer>
+
+    <script>
+        // 메뉴 링크를 클릭하면 체크박스를 '해제(unchecked)' 상태로 변경하여 메뉴를 닫음
+        const menuLinks = document.querySelectorAll('.nav-menu a');
+        const checkbox = document.getElementById('menu-checkbox');
+
+        menuLinks.forEach(link => {
+            link.addEventListener('click', () => {
+                checkbox.checked = false;
+            });
+        });
+    </script>
 
 </body>
 </html>
