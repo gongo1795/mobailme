@@ -3,30 +3,30 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>동적 반응형 포트폴리오</title>
+    <title>윤영옥 포트폴리오</title>
     <style>
         /* === 기본 스타일 === */
         :root {
-            --primary: #865d9f;
+            --primary: #865d9f; /* 보내주신 보라색 테마 유지 */
             --text: #333;
-            --bg: #fdfdfd;
+            --bg: #f9f9fa;
         }
         
         * { box-sizing: border-box; margin: 0; padding: 0; }
         
         body {
-            font-family: 'Pretendard', sans-serif;
+            font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, system-ui, Roboto, sans-serif;
             line-height: 1.6;
             color: var(--text);
             background-color: var(--bg);
-            overflow-x: hidden; /* 가로 스크롤 방지 */
+            overflow-x: hidden;
         }
 
         /* 헤더 */
         header {
-            background-color: rgba(255, 255, 255, 0.95); /* 약간 투명하게 */
-            backdrop-filter: blur(5px); /* 배경 흐림 효과 */
-            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            background-color: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(5px);
+            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
             position: sticky;
             top: 0;
             z-index: 100;
@@ -43,97 +43,142 @@
 
         .logo {
             font-size: 1.2rem;
-            font-weight: bold;
+            font-weight: 800;
             color: var(--primary);
             text-decoration: none;
         }
 
-        /* 햄버거 메뉴 (체크박스 해킹) */
+        /* 햄버거 메뉴 (체크박스 방식) */
         #menu-checkbox { display: none; }
-        .menu-label { display: block; cursor: pointer; font-size: 24px; }
+        .menu-label { display: block; cursor: pointer; font-size: 24px; padding: 5px; }
         .nav-menu {
             display: none;
             position: absolute;
             top: 100%; left: 0; width: 100%;
             background-color: white;
-            box-shadow: 0 5px 5px rgba(0,0,0,0.1);
+            box-shadow: 0 5px 10px rgba(0,0,0,0.1);
             flex-direction: column;
             text-align: center;
+            border-top: 1px solid #eee;
         }
         #menu-checkbox:checked ~ .nav-menu { display: flex; }
-        .nav-menu a { padding: 15px; text-decoration: none; color: #333; border-bottom: 1px solid #eee; transition: background 0.3s; }
-        .nav-menu a:hover { background-color: #f0f0f0; color: var(--primary); }
+        .nav-menu a { padding: 15px; text-decoration: none; color: #555; border-bottom: 1px solid #eee; transition: all 0.3s; }
+        .nav-menu a:hover { background-color: #f3e5f5; color: var(--primary); }
 
         /* === 메인 콘텐츠 === */
-        main { padding: 20px; max-width: 1000px; margin: 0 auto; }
+        main { padding: 30px 20px; max-width: 1000px; margin: 0 auto; }
 
         section {
-            margin-bottom: 60px; /* 간격 넓힘 */
+            margin-bottom: 60px;
             padding: 30px;
             background: white;
-            border-radius: 15px;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+            border-radius: 16px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.03);
             
-            /* [애니메이션 준비] 처음에는 투명하고 아래로 조금 내려가 있음 */
+            /* 스크롤 애니메이션 초기 상태 */
             opacity: 0;
             transform: translateY(30px);
-            transition: all 0.8s ease-out; /* 0.8초 동안 부드럽게 변함 */
+            transition: all 0.8s ease-out;
         }
 
-        /* 자바스크립트가 이 클래스를 붙이면 나타남 */
-        section.visible {
-            opacity: 1;
-            transform: translateY(0);
+        section.visible { opacity: 1; transform: translateY(0); }
+
+        h2 { 
+            color: var(--primary); 
+            margin-bottom: 25px; 
+            font-size: 1.8rem;
+            border-left: 5px solid var(--primary);
+            padding-left: 15px;
         }
 
-        h2 { color: var(--primary); margin-bottom: 15px; }
-
-        /* 타이핑 효과 커서 */
-        #typing-text {
-            font-weight: bold;
-            color: #333;
+        /* 소개 프로필 */
+        .profile { text-align: center; }
+        .profile-img {
+            width: 130px; height: 130px; border-radius: 50%;
+            background-color: #eee; margin: 0 auto 20px;
+            object-fit: cover;
+            border: 4px solid var(--primary);
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
         }
+        
+        #typing-text { font-weight: 700; color: #222; }
         .cursor {
-            display: inline-block;
-            width: 3px;
-            height: 1em;
-            background-color: #333;
-            animation: blink 0.7s infinite;
-            vertical-align: middle;
+            display: inline-block; width: 2px; height: 1.2em;
+            background-color: #333; animation: blink 0.7s infinite;
+            vertical-align: bottom;
         }
         @keyframes blink { 50% { opacity: 0; } }
 
-        /* 프로필 및 기타 스타일 */
-        .profile { text-align: center; }
-        .profile-img {
-            width: 120px; height: 120px; border-radius: 50%;
-            background-color: #ddd; margin: 0 auto 20px;
-            object-fit: cover;
-            border: 4px solid var(--primary);
-        }
-
+        /* 기술 스택 */
         .skills-list { display: grid; grid-template-columns: repeat(2, 1fr); gap: 15px; }
         .skill-item {
             background: #f8f9fa; padding: 15px; text-align: center;
-            border-radius: 10px; font-weight: bold;
+            border-radius: 10px; font-weight: 600; color: #555;
+            border: 1px solid #eee;
             transition: transform 0.3s;
         }
-        .skill-item:hover { transform: translateY(-5px); background: #e3f2fd; }
+        .skill-item:hover { transform: translateY(-3px); border-color: var(--primary); color: var(--primary); }
 
-        footer { text-align: center; padding: 40px 20px; background: #333; color: white; margin-top: 50px; }
+        /* === 프로젝트 그리드 디자인 (업그레이드) === */
+        .projects-grid {
+            display: grid;
+            grid-template-columns: 1fr; /* 모바일 1열 */
+            gap: 20px;
+        }
 
-        /* === 반응형 (PC) === */
+        .project-card {
+            background: #fff;
+            border: 1px solid #eee;
+            border-radius: 12px;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+
+        .project-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 15px rgba(0,0,0,0.1);
+            border-color: var(--primary);
+        }
+
+        .project-card h3 { font-size: 1.1rem; margin-bottom: 10px; color: #333; }
+        .project-card p { font-size: 0.95rem; color: #666; margin-bottom: 15px; flex-grow: 1; }
+        
+        /* 버튼 스타일 링크 */
+        .project-link {
+            display: block;
+            text-align: center;
+            text-decoration: none;
+            background-color: var(--primary);
+            color: white;
+            padding: 10px;
+            border-radius: 6px;
+            font-size: 0.9rem;
+            transition: background 0.3s;
+        }
+        .project-link:hover { background-color: #6a4a80; }
+
+
+        footer { text-align: center; padding: 50px 20px; background: #333; color: #ccc; font-size: 0.9rem; margin-top: 50px; }
+
+        /* === 반응형 (태블릿 & PC) === */
         @media (min-width: 768px) {
             .menu-label { display: none; }
             .nav-menu {
                 display: flex !important; position: static;
-                flex-direction: row; width: auto; box-shadow: none; background: transparent; gap: 30px;
+                flex-direction: row; width: auto; box-shadow: none; background: transparent; gap: 30px; border: none;
             }
             .nav-menu a { border-bottom: none; padding: 0; }
             
             .profile { display: flex; align-items: center; text-align: left; gap: 40px; }
-            .profile-img { margin: 0; width: 150px; height: 150px; }
+            .profile-img { margin: 0; width: 160px; height: 160px; }
+            
             .skills-list { grid-template-columns: repeat(4, 1fr); }
+            
+            /* 프로젝트 2열 그리드 */
+            .projects-grid { grid-template-columns: 1fr 1fr; }
         }
     </style>
 </head>
@@ -155,10 +200,10 @@
 
     <main>
         <section id="about" class="profile">
-            <img src="https://via.placeholder.com/150" alt="프로필" class="profile-img">
+            <img src="https://via.placeholder.com/160" alt="프로필" class="profile-img">
             <div>
                 <h2>안녕하세요! <br><span id="typing-text"></span><span class="cursor"></span></h2>
-                <p>AISW학을 공부하고 있는 25학번 윤영옥힙니다.<br>
+                <p>AISW학을 공부하고 있는 25학번 윤영옥입니다.<br>
                 아이디어를 코드로 실현하는 것을 좋아합니다.</p>
             </div>
         </section>
@@ -175,73 +220,109 @@
 
         <section id="projects">
             <h2>🚀 Projects</h2>
-            <div style="margin-bottom: 20px;">
-                <h3>1. 개인 포트폴리오 웹사이트</h3>
-                <p>HTML, CSS, JS만을 사용하여 반응형 웹사이트를 구축했습니다.</p>
-            </div>
-            <div>
-                <h3>2. 투두 리스트 앱</h3>
-                <p>로컬 스토리지를 활용하여 데이터를 저장하는 웹 애플리케이션입니다.</p>
+            <div class="projects-grid">
+                
+                <div class="project-card">
+                    <div>
+                        <h3>1. 개인 포트폴리오 웹사이트</h3>
+                        <p>HTML, CSS, JS만을 사용하여 반응형 웹사이트를 구축했습니다.</p>
+                    </div>
+                    <a href="https://github.com/gongo1795/gongo1795_portfolio1" target="_blank" class="project-link">GitHub 보기</a>
+                </div>
+
+                <div class="project-card">
+                    <div>
+                        <h3>2. 블로그 페이지</h3>
+                        <p>로컬 스토리지를 활용하여 데이터를 저장하는 웹 애플리케이션입니다.</p>
+                    </div>
+                    <a href="https://gongo1795.github.io/" target="_blank" class="project-link">사이트 방문</a>
+                </div>
+
+                <div class="project-card">
+                    <div>
+                        <h3>3. 크리스마스 이벤트 페이지</h3>
+                        <p>HTML, CSS, JS만을 사용하여 반응형 웹사이트를 구축했습니다.</p>
+                    </div>
+                    <a href="https://christmastree-dccfb.web.app/index.html" target="_blank" class="project-link">사이트 방문</a>
+                </div>
+
+                <div class="project-card">
+                    <div>
+                        <h3>4. 얼음 빙하 펭귄 게임</h3>
+                        <p>로컬 스토리지를 활용하여 데이터를 저장하는 웹 애플리케이션입니다.</p>
+                    </div>
+                    <a href="https://gongo1795.github.io/minigame/" target="_blank" class="project-link">게임 하기</a>
+                </div>
+
+                <div class="project-card">
+                    <div>
+                        <h3>5. 웹프로그래밍 기초 개념 정리</h3>
+                        <p>웹 프로그래밍 공부 내용을 정리한 페이지입니다.</p>
+                    </div>
+                    <a href="https://gongo1795.github.io/webprograming_note/" target="_blank" class="project-link">노트 보기</a>
+                </div>
+
+                <div class="project-card">
+                    <div>
+                        <h3>6. 진로로드맵 작성 웹페이지</h3>
+                        <p>진로 계획을 시각적으로 작성해볼 수 있는 페이지입니다.</p>
+                    </div>
+                    <a href="https://gongo1795.github.io/jji1212/" target="_blank" class="project-link">로드맵 보기</a>
+                </div>
+
             </div>
         </section>
 
         <section id="contact">
             <h2>📧 Contact</h2>
-            <p>이메일: gongo1795@hs.ac.kr</p>
+            <p>이메일: <a href="mailto:gongo1795@hs.ac.kr" style="color:var(--primary); text-decoration: none; font-weight: bold;">gongo1795@hs.ac.kr</a></p>
             <p>전화번호: 010-6320-4895</p>
         </section>
     </main>
 
     <footer>
-        &copy; 2025 My Portfolio. All rights reserved.
+        &copy; 2025 Yun Young Ok. All rights reserved.
     </footer>
 
     <script>
-        // 1. 모바일 메뉴 닫기 기능 (기존 유지)
+        // 1. 메뉴 닫기 기능
         const menuLinks = document.querySelectorAll('.nav-menu a');
         const checkbox = document.getElementById('menu-checkbox');
         menuLinks.forEach(link => {
             link.addEventListener('click', () => { checkbox.checked = false; });
         });
 
-        // 2. 타이핑 효과 (Typewriter Effect)
+        // 2. 타이핑 효과 (내용 수정됨)
         const textElement = document.getElementById('typing-text');
-        const textToType = "개발자 꿈나무 윤영옥입니다."; // 타이핑할 문구
+        const textToType = "개발자 꿈나무 윤영옥입니다.";
         let index = 0;
 
         function typeWriter() {
             if (index < textToType.length) {
                 textElement.textContent += textToType.charAt(index);
                 index++;
-                setTimeout(typeWriter, 100); // 0.1초마다 한 글자씩
+                setTimeout(typeWriter, 100);
             }
         }
-        
-        // 페이지 로드 0.5초 후 타이핑 시작
         setTimeout(typeWriter, 500);
 
-
-        // 3. 스크롤 애니메이션 (Intersection Observer)
-        // 화면에 요소가 나타나는지 감시하는 '관찰자'를 만듭니다.
+        // 3. 스크롤 애니메이션
         const observerOptions = {
-            root: null, // 뷰포트 기준
+            root: null,
             rootMargin: '0px',
-            threshold: 0.1 // 요소가 10% 정도 보이면 실행
+            threshold: 0.1
         };
 
         const observer = new IntersectionObserver((entries, observer) => {
             entries.forEach(entry => {
-                // 요소가 화면에 들어오면(isIntersecting)
                 if (entry.isIntersecting) {
-                    entry.target.classList.add('visible'); // 'visible' 클래스 추가
-                    observer.unobserve(entry.target); // 한 번 나타나면 감시 중단 (성능 최적화)
+                    entry.target.classList.add('visible');
+                    observer.unobserve(entry.target);
                 }
             });
         }, observerOptions);
 
-        // 모든 section 태그를 감시 대상으로 등록
-        const sections = document.querySelectorAll('section');
-        sections.forEach(section => {
+        document.querySelectorAll('section').forEach(section => {
             observer.observe(section);
         });
     </script>
