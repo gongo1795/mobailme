@@ -3,11 +3,11 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>반응형 자기소개 페이지</title>
+    <title>동적 반응형 포트폴리오</title>
     <style>
-        /* === 기본 스타일 (공통) === */
+        /* === 기본 스타일 === */
         :root {
-            --primary: #745e96;
+            --primary: #865d9f;
             --text: #333;
             --bg: #fdfdfd;
         }
@@ -19,11 +19,13 @@
             line-height: 1.6;
             color: var(--text);
             background-color: var(--bg);
+            overflow-x: hidden; /* 가로 스크롤 방지 */
         }
 
-        /* 헤더 영역 */
+        /* 헤더 */
         header {
-            background-color: white;
+            background-color: rgba(255, 255, 255, 0.95); /* 약간 투명하게 */
+            backdrop-filter: blur(5px); /* 배경 흐림 효과 */
             box-shadow: 0 2px 5px rgba(0,0,0,0.1);
             position: sticky;
             top: 0;
@@ -37,7 +39,6 @@
             padding: 15px 20px;
             max-width: 1000px;
             margin: 0 auto;
-            position: relative;
         }
 
         .logo {
@@ -47,144 +48,92 @@
             text-decoration: none;
         }
 
-        /* ==============================================
-           2. 체크박스 햄버거 메뉴 핵심 로직 (보여주신 이미지 원리)
-           ============================================== */
-        
-        /* (1) 실제 체크박스는 화면에서 숨깁니다 */
-        #menu-checkbox {
-            display: none;
-        }
-
-        /* (2) 라벨: 사용자가 누르는 버튼 (햄버거 아이콘) */
-        .menu-label {
-            display: block; /* 모바일에서만 보임 */
-            cursor: pointer;
-            font-size: 24px;
-        }
-
-        /* (3) 네비게이션 메뉴: 기본적으로 모바일에서는 숨김 */
+        /* 햄버거 메뉴 (체크박스 해킹) */
+        #menu-checkbox { display: none; }
+        .menu-label { display: block; cursor: pointer; font-size: 24px; }
         .nav-menu {
-            display: none; /* 안 보임 상태 */
+            display: none;
             position: absolute;
-            top: 100%;
-            left: 0;
-            width: 100%;
+            top: 100%; left: 0; width: 100%;
             background-color: white;
             box-shadow: 0 5px 5px rgba(0,0,0,0.1);
             flex-direction: column;
             text-align: center;
         }
-
-        /* (4) 핵심 동작: 체크박스가 체크(:checked)되면 -> 형제 요소인 메뉴(.nav-menu)를 보여줌(block) */
-        #menu-checkbox:checked ~ .nav-menu {
-            display: flex;
-        }
-
-        /* 메뉴 링크 스타일 */
-        .nav-menu a {
-            padding: 15px;
-            text-decoration: none;
-            color: #333;
-            border-bottom: 1px solid #eee;
-        }
-        .nav-menu a:hover { background-color: #f0f0f0; }
-
+        #menu-checkbox:checked ~ .nav-menu { display: flex; }
+        .nav-menu a { padding: 15px; text-decoration: none; color: #333; border-bottom: 1px solid #eee; transition: background 0.3s; }
+        .nav-menu a:hover { background-color: #f0f0f0; color: var(--primary); }
 
         /* === 메인 콘텐츠 === */
-        main {
-            padding: 20px;
-            max-width: 1000px;
-            margin: 0 auto;
-        }
+        main { padding: 20px; max-width: 1000px; margin: 0 auto; }
 
         section {
-            margin-bottom: 40px;
-            padding: 20px;
+            margin-bottom: 60px; /* 간격 넓힘 */
+            padding: 30px;
             background: white;
-            border-radius: 10px;
-            border: 1px solid #eee;
+            border-radius: 15px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+            
+            /* [애니메이션 준비] 처음에는 투명하고 아래로 조금 내려가 있음 */
+            opacity: 0;
+            transform: translateY(30px);
+            transition: all 0.8s ease-out; /* 0.8초 동안 부드럽게 변함 */
+        }
+
+        /* 자바스크립트가 이 클래스를 붙이면 나타남 */
+        section.visible {
+            opacity: 1;
+            transform: translateY(0);
         }
 
         h2 { color: var(--primary); margin-bottom: 15px; }
 
-        /* 프로필 카드 */
-        .profile {
-            text-align: center;
+        /* 타이핑 효과 커서 */
+        #typing-text {
+            font-weight: bold;
+            color: #333;
         }
+        .cursor {
+            display: inline-block;
+            width: 3px;
+            height: 1em;
+            background-color: #333;
+            animation: blink 0.7s infinite;
+            vertical-align: middle;
+        }
+        @keyframes blink { 50% { opacity: 0; } }
+
+        /* 프로필 및 기타 스타일 */
+        .profile { text-align: center; }
         .profile-img {
-            width: 100px;
-            height: 100px;
-            border-radius: 50%;
-            background-color: #ddd; /* 이미지 없을 때 회색 원 */
-            margin: 0 auto 15px;
+            width: 120px; height: 120px; border-radius: 50%;
+            background-color: #ddd; margin: 0 auto 20px;
             object-fit: cover;
+            border: 4px solid var(--primary);
         }
 
-        /* 기술 스택 그리드 */
-        .skills-list {
-            display: grid;
-            grid-template-columns: repeat(2, 1fr); /* 모바일: 2열 */
-            gap: 10px;
-        }
+        .skills-list { display: grid; grid-template-columns: repeat(2, 1fr); gap: 15px; }
         .skill-item {
-            background: #eee;
-            padding: 10px;
-            text-align: center;
-            border-radius: 5px;
-            font-size: 0.9rem;
+            background: #f8f9fa; padding: 15px; text-align: center;
+            border-radius: 10px; font-weight: bold;
+            transition: transform 0.3s;
         }
+        .skill-item:hover { transform: translateY(-5px); background: #e3f2fd; }
 
-        /* 푸터 */
-        footer {
-            text-align: center;
-            padding: 20px;
-            background: #333;
-            color: white;
-            font-size: 0.8rem;
-        }
+        footer { text-align: center; padding: 40px 20px; background: #333; color: white; margin-top: 50px; }
 
-        /* ==============================================
-           3. 반응형 디자인 (Media Queries)
-           ============================================== */
-        
-        /* 태블릿 & PC (화면 너비 768px 이상일 때 적용) */
+        /* === 반응형 (PC) === */
         @media (min-width: 768px) {
-            
-            /* (1) 체크박스 시스템 해제: PC에서는 햄버거 버튼 숨김 */
-            .menu-label {
-                display: none;
-            }
-
-            /* (2) 메뉴 상시 노출: 가로로 배치 */
+            .menu-label { display: none; }
             .nav-menu {
-                display: flex !important; /* 모바일의 숨김 속성 덮어쓰기 */
-                position: static; /* 절대 위치 해제 */
-                flex-direction: row; /* 가로 배치 */
-                width: auto;
-                box-shadow: none;
-                background: transparent;
-                gap: 20px;
+                display: flex !important; position: static;
+                flex-direction: row; width: auto; box-shadow: none; background: transparent; gap: 30px;
             }
-
-            .nav-menu a {
-                border-bottom: none;
-                padding: 0;
-            }
-
-            /* 레이아웃 변경: 프로필 옆에 소개글 오도록 */
-            .profile {
-                display: flex;
-                align-items: center;
-                text-align: left;
-                gap: 20px;
-            }
-            .profile-img { margin: 0; }
-
-            /* 기술 스택 4열로 확장 */
-            .skills-list {
-                grid-template-columns: repeat(4, 1fr);
-            }
+            .nav-menu a { border-bottom: none; padding: 0; }
+            
+            .profile { display: flex; align-items: center; text-align: left; gap: 40px; }
+            .profile-img { margin: 0; width: 150px; height: 150px; }
+            .skills-list { grid-template-columns: repeat(4, 1fr); }
         }
     </style>
 </head>
@@ -193,12 +142,8 @@
     <header>
         <div class="header-container">
             <a href="#" class="logo">My Portfolio</a>
-
             <input type="checkbox" id="menu-checkbox">
-            
-            <label for="menu-checkbox" class="menu-label">
-                ☰ </label>
-
+            <label for="menu-checkbox" class="menu-label">☰</label>
             <nav class="nav-menu">
                 <a href="#about">소개</a>
                 <a href="#skills">기술</a>
@@ -210,11 +155,11 @@
 
     <main>
         <section id="about" class="profile">
-            <img src="https://via.placeholder.com/150" alt="프로필 사진" class="profile-img">
+            <img src="https://via.placeholder.com/150" alt="프로필" class="profile-img">
             <div>
-                <h2>안녕하세요! 👋</h2>
-                <p>사용자 경험을 중요하게 생각하는 웹 개발자 <strong>홍길동</strong>입니다.<br>
-                반응형 웹 디자인과 인터랙티브한 UI 구현에 관심이 많습니다.</p>
+                <h2>안녕하세요! <br><span id="typing-text"></span><span class="cursor"></span></h2>
+                <p>사용자 경험을 중요하게 생각하는 웹 개발자입니다.<br>
+                아이디어를 코드로 실현하는 것을 좋아합니다.</p>
             </div>
         </section>
 
@@ -222,39 +167,82 @@
             <h2>🛠 Skills</h2>
             <div class="skills-list">
                 <div class="skill-item">HTML5 / CSS3</div>
-                <div class="skill-item">JavaScript</div>
-                <div class="skill-item">React</div>
-                <div class="skill-item">Git / GitHub</div>
+                <div class="skill-item">JavaScript (ES6+)</div>
+                <div class="skill-item">React.js</div>
+                <div class="skill-item">Node.js</div>
             </div>
         </section>
 
         <section id="projects">
             <h2>🚀 Projects</h2>
-            <p><strong>1. 포트폴리오 사이트</strong><br>반응형 디자인을 적용한 개인 소개 페이지입니다.</p>
-            <hr style="margin: 10px 0; border: 0; border-top: 1px solid #eee;">
-            <p><strong>2. 할 일 목록 앱 (Todo App)</strong><br>JavaScript 로컬 스토리지를 활용한 앱입니다.</p>
+            <div style="margin-bottom: 20px;">
+                <h3>1. 개인 포트폴리오 웹사이트</h3>
+                <p>HTML, CSS, JS만을 사용하여 반응형 웹사이트를 구축했습니다.</p>
+            </div>
+            <div>
+                <h3>2. 투두 리스트 앱</h3>
+                <p>로컬 스토리지를 활용하여 데이터를 저장하는 웹 애플리케이션입니다.</p>
+            </div>
         </section>
 
         <section id="contact">
             <h2>📧 Contact</h2>
-            <p>Email: me@example.com</p>
-            <p>Phone: 010-1234-5678</p>
+            <p>이메일: contact@example.com</p>
+            <p>전화번호: 010-1234-5678</p>
         </section>
     </main>
 
     <footer>
-        &copy; 2025 Hong Gil Dong. All rights reserved.
+        &copy; 2025 My Portfolio. All rights reserved.
     </footer>
 
     <script>
-        // 메뉴 링크를 클릭하면 체크박스를 '해제(unchecked)' 상태로 변경하여 메뉴를 닫음
+        // 1. 모바일 메뉴 닫기 기능 (기존 유지)
         const menuLinks = document.querySelectorAll('.nav-menu a');
         const checkbox = document.getElementById('menu-checkbox');
-
         menuLinks.forEach(link => {
-            link.addEventListener('click', () => {
-                checkbox.checked = false;
+            link.addEventListener('click', () => { checkbox.checked = false; });
+        });
+
+        // 2. 타이핑 효과 (Typewriter Effect)
+        const textElement = document.getElementById('typing-text');
+        const textToType = "프론트엔드 개발자 홍길동입니다."; // 타이핑할 문구
+        let index = 0;
+
+        function typeWriter() {
+            if (index < textToType.length) {
+                textElement.textContent += textToType.charAt(index);
+                index++;
+                setTimeout(typeWriter, 100); // 0.1초마다 한 글자씩
+            }
+        }
+        
+        // 페이지 로드 0.5초 후 타이핑 시작
+        setTimeout(typeWriter, 500);
+
+
+        // 3. 스크롤 애니메이션 (Intersection Observer)
+        // 화면에 요소가 나타나는지 감시하는 '관찰자'를 만듭니다.
+        const observerOptions = {
+            root: null, // 뷰포트 기준
+            rootMargin: '0px',
+            threshold: 0.1 // 요소가 10% 정도 보이면 실행
+        };
+
+        const observer = new IntersectionObserver((entries, observer) => {
+            entries.forEach(entry => {
+                // 요소가 화면에 들어오면(isIntersecting)
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('visible'); // 'visible' 클래스 추가
+                    observer.unobserve(entry.target); // 한 번 나타나면 감시 중단 (성능 최적화)
+                }
             });
+        }, observerOptions);
+
+        // 모든 section 태그를 감시 대상으로 등록
+        const sections = document.querySelectorAll('section');
+        sections.forEach(section => {
+            observer.observe(section);
         });
     </script>
 
