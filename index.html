@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>반응형 자기소개 페이지</title>
+    <link rel="stylesheet" href="style.css">
+    <script src="script.js" defer></script>
+</head>
+<body>
+
+    <header class="header">
+        <h1>제 이름 (NAME)</h1>
+        
+        <input type="checkbox" id="menu-toggle" class="menu-toggle">
+        <label for="menu-toggle" class="hamburger-icon">
+            &#9776; </label>
+
+        <nav class="nav">
+            <ul>
+                <li><a href="#about">소개</a></li>
+                <li><a href="#skills">기술</a></li>
+                <li><a href="#projects">프로젝트</a></li>
+                <li><a href="#contact">연락처</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <main class="main-content">
+        <section id="about" class="section about">
+            <h2>👋 저를 소개합니다</h2>
+            <p>저는 프론트엔드 개발자를 꿈꾸는 [경력/전공] 분야의 [N년차]입니다. 사용자 경험(UX)을 중요하게 생각하며, 깔끔하고 효율적인 코드 작성을 위해 노력합니다.</p>
+            <div class="profile-card">
+                <img src="profile.jpg" alt="프로필 사진"> 
+                <p><strong>생년월일:</strong> 19XX.XX.XX</p>
+                <p><strong>거주지:</strong> [지역]</p>
+            </div>
+        </section>
+
+        <section id="skills" class="section skills">
+            <h2>🛠️ 기술 스택</h2>
+            <div class="skills-grid">
+                <span>HTML5 / CSS3</span>
+                <span>JavaScript (ES6+)</span>
+                <span>React / Vue.js</span>
+                <span>Node.js / Python</span>
+            </div>
+        </section>
+        
+        <section id="projects" class="section projects">
+            <h2>🚀 주요 프로젝트</h2>
+            <div class="project-item">
+                <h3>프로젝트 A</h3>
+                <p>반응형 쇼핑몰 웹사이트 구축 (HTML, CSS, JS, API 연동)</p>
+            </div>
+            <div class="project-item">
+                <h3>프로젝트 B</h3>
+                <p>데이터 시각화 대시보드 개발 (React, D3.js)</p>
+            </div>
+        </section>
+        
+        <section id="contact" class="section contact">
+            <h2>📧 연락처</h2>
+            <p>이메일: <a href="mailto:your-email@example.com">your-email@example.com</a></p>
+            <p>GitHub: <a href="https://github.com/yourname">github.com/yourname</a></p>
+        </section>
+    </main>
+
+    <footer class="footer">
+        <p>&copy; 2025. All rights reserved by [Your Name].</p>
+    </footer>
+
+</body>
+</html>
