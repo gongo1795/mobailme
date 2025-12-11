@@ -7,7 +7,7 @@
     <style>
         /* === 기본 스타일 === */
         :root {
-            --primary: #865d9f; /* 보내주신 보라색 테마 유지 */
+            --primary: #865d9f;
             --text: #333;
             --bg: #f9f9fa;
         }
@@ -20,6 +20,13 @@
             color: var(--text);
             background-color: var(--bg);
             overflow-x: hidden;
+            
+            /* 🔥 [핵심 추가] 한글 단어 끊김 방지 설정 🔥 */
+            /* 단어 중간에서 줄바꿈되지 않고, 단어 전체가 내려갑니다 */
+            word-break: keep-all;
+            
+            /* 긴 영어 주소(URL)는 강제로 줄바꿈해서 레이아웃 깨짐 방지 */
+            overflow-wrap: break-word; 
         }
 
         /* 헤더 */
@@ -119,7 +126,7 @@
         }
         .skill-item:hover { transform: translateY(-3px); border-color: var(--primary); color: var(--primary); }
 
-        /* === 프로젝트 그리드 디자인 (업그레이드) === */
+        /* === 프로젝트 그리드 디자인 === */
         .projects-grid {
             display: grid;
             grid-template-columns: 1fr; /* 모바일 1열 */
@@ -292,7 +299,7 @@
             link.addEventListener('click', () => { checkbox.checked = false; });
         });
 
-        // 2. 타이핑 효과 (내용 수정됨)
+        // 2. 타이핑 효과
         const textElement = document.getElementById('typing-text');
         const textToType = "개발자 꿈나무 윤영옥입니다.";
         let index = 0;
